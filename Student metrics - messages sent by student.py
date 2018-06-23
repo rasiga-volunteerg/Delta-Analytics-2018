@@ -1,5 +1,5 @@
 
-# Input the start and end date, student_id and timeseries_unit to get the no.of messages received by the student in that time period
+# Input the start and end date, student_id and timeseries_unit to get the no.of messages sent by the student in that time period
 # at the weekly/daily/hourly level
 
 #Example values - arguments to the function
@@ -12,7 +12,7 @@
 # student_id = id of the student for whom the specific metric is calculated
 # timeseries_unit = {daily, hourly, weekly}
 
-def num_messages_received_by_student(sdate, edate, student_id, timeseries_unit):
+def num_messages_sent_by_student(sdate, edate, student_id, timeseries_unit):
     # deep copy raw DF for processing
     mid_mindright_df = copy.deepcopy(raw_mindright_df)
 
@@ -43,11 +43,11 @@ def num_messages_received_by_student(sdate, edate, student_id, timeseries_unit):
         mindright_df['date'] = mindright_df['date'].dt.to_period('W').apply(lambda r: r.start_time)
  
     # Get all rows where direction=sent (sent from MR);  and then get the no.of messages sent from MR per student per day
-    df_received = mindright_df[(mindright_df['direction'] == 'sent') & (mindright_df['student_id'] == student_id)]
+    df_sent = mindright_df[(mindright_df['direction'] == 'sent') & (mindright_df['student_id'] == student_id)]
 	
     # group the messages sent to students by date, student_id
-    df_received_grouped_by_date = df_received.groupby(['date'])
+    df_sent_grouped_by_date = df_sent.groupby(['date'])
 	
     # aggregating the no.of messages the data grouped by date, student
-    output_df = df_received_grouped_by_date.agg('size')
+    output_df = df_sent_grouped_by_date.agg('size')
     return output_df
